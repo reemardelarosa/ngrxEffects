@@ -1,4 +1,13 @@
 import { Component } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+
+import { Post } from './models/post.model';
+import * as postActions from './actions/post.action';
+
+interface AppState {
+  post: Post
+}
 
 @Component({
   selector: 'app-root',
@@ -6,5 +15,17 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'ngrxEffects';
+  post$: Observable<Post>;
+
+  constructor(private store: Store<AppState>) {
+    this.post$ = this.store.select('post');
+  }
+
+  getPost() {
+    this.store.dispatch(new postActions.GetPost('/posts/testPost'));
+  }
+
+  vote(post: Post, val: number) {
+    this.store.dispatch(new postActions.VoteUpdate({ post, val }));
+  }
 }
